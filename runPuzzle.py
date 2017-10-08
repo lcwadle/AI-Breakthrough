@@ -1,0 +1,36 @@
+import FlowFree
+
+print("5x5 Puzzle - Dumb Backtracking Algorithm")
+puzzle = FlowFree.Puzzle('inputs/5x5.txt')
+puzzle.btAlgorithm()
+print("Assignments: " + str(puzzle.numAssignments))
+print("Run Time: " + str(puzzle.runTime))
+print()
+
+print("5x5 Puzzle - Smart Backtracking Algorithm")
+puzzle = FlowFree.Puzzle('inputs/5x5.txt')
+puzzle.smartBtAlgorithm()
+print("Assignments: " + str(puzzle.numAssignments))
+print("Run Time: " + str(puzzle.runTime))
+print()
+
+print("7x7 Puzzle - Dumb Backtracking Algorithm")
+puzzle = FlowFree.Puzzle('inputs/7x7.txt')
+puzzle.btAlgorithm()
+print("Assignments: " + str(puzzle.numAssignments))
+print("Run Time: " + str(puzzle.runTime))
+print()
+
+print("8x8 Puzzle - Dumb Backtracking Algorithm")
+puzzle = FlowFree.Puzzle('inputs/8x8.txt')
+puzzle.btAlgorithm()
+print("Assignments: " + str(puzzle.numAssignments))
+print("Run Time: " + str(puzzle.runTime))
+print()
+
+print("9x9 Puzzle - Dumb Backtracking Algorithm")
+puzzle = FlowFree.Puzzle('inputs/9x9.txt')
+puzzle.btAlgorithm()
+print("Assignments: " + str(puzzle.numAssignments))
+print("Run Time: " + str(puzzle.runTime))
+print()
