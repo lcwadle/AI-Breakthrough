@@ -24,6 +24,7 @@ class Puzzle:
         self.emptyNodes = 0
         self.numAssignments = 0
         self.runTime = 0.0
+        self.endPoints = []
 
         puzzleObject = open(filename, 'r')
         rows = 0
@@ -38,6 +39,7 @@ class Puzzle:
                 if char != '_':
                     node.startValue = True
                     self.colors.add(char)
+                    self.endPoints.append(node)
                 else:
                     self.emptyNodes += 1
 
@@ -111,13 +113,13 @@ class Puzzle:
             pass
         for color in self.colors:
             #print("Checking color: " + color)
-            if self.meetsContraints(nextNode, color):
+            if self.meetsSmartContraints(nextNode, color):
                 self.numAssignments += 1
                 nextNode.value = color
                 self.emptyNodes -= 1
                 #self.printPuzzle()
                 #input("Press Enter to continue")
-                currentState = self.btAlgorithm()
+                currentState = self.smartBtAlgorithm()
                 if currentState != None:
                     return currentState
                 else:
@@ -151,6 +153,38 @@ class Puzzle:
         return adjacentNodes
 
     def meetsContraints(self, node, color):
+        # Check to make sure node does not already contain a color
+        if node.value != '_':
+            #print("Failed Constraint: Node already has a value")
+            return False
+
+        adjacentNodes = self.getAdjacentNodes(node)
+
+        # Check to make sure node is not Isolated
+        matchingColorNodes = 0
+        for otherNode in adjacentNodes:
+            if otherNode.value == '_' or otherNode.value == color:
+                matchingColorNodes += 1
+        if matchingColorNodes == 0:
+            #print("Failed Constraint: No matching adjacent nodes")
+            return False
+
+        # Check for zig-zag pattern on non-start nodes
+        for otherNode in adjacentNodes:
+            matchingColorNodes = 0
+            if otherNode.startValue == False:
+                otherAdjacentNodes = self.getAdjacentNodes(otherNode)
+                for otherAdjNode in otherAdjacentNodes:
+                    if otherAdjNode.value == color:
+                        matchingColorNodes += 1
+                if matchingColorNodes >= 2:
+                    #print("Failed Constraint: Zig-zag pattern")
+                    return False
+
+        # All contraints pass
+        return True
+
+    def meetsSmartContraints(self, node, color):
         # Check to make sure node does not already contain a color
         if node.value != '_':
             #print("Failed Constraint: Node already has a value")
@@ -202,8 +236,30 @@ class Puzzle:
         return True
 
     def goalTest(self):
+        #condition = True
+        #for node in self.endPoints:
+            #print("Color: " + node.value)
+            #if self.goalsMet(node) == False:
+                #condition = False
+                #print("Failed")
+                #break
+            #print("Success")
+        #self.printPuzzle()
+        #input("Press Enter to continue")
         if self.emptyNodes == 0:
             self.printPuzzle()
             return True
         else:
             return False
+
+    def goalsMet(self, startNode):
+        adjacentNodes = self.getAdjacentNodes(startNode)
+        #print("Starting Node: " + str(startNode.row) + "," + str(startNode.col) + " - " + startNode.value)
+        for adjacentNode in adjacentNodes:
+            #print("Adjacent Node: " + str(adjacentNode.row) + "," + str(adjacentNode.col) + " - " + adjacentNode.value)
+            #input("Press Enter to continue")
+            if adjacentNode.value == startNode.value and adjacentNode.startValue == True:
+                return True
+            elif adjacentNode.value == startNode.value:
+                return self.goalsMet(adjacentNode)
+        return False
