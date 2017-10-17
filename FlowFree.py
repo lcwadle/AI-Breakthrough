@@ -1,4 +1,4 @@
-import time
+from random import randint, shuffle
 
 class Node:
     def __init__(self, row, col, value):
@@ -20,10 +20,9 @@ class Puzzle:
         self.colList = []
         self.colsInMaze = 0
         self.rowsInMaze = 0
-        self.colors = set()
+        self.colors = []
         self.emptyNodes = 0
         self.numAssignments = 0
-        self.runTime = 0.0
         self.endPoints = []
 
         puzzleObject = open(filename, 'r')
@@ -38,7 +37,12 @@ class Puzzle:
 
                 if char != '_':
                     node.startValue = True
-                    self.colors.add(char)
+                    exists = False
+                    for color in self.colors:
+                        if char == color:
+                            exists = True
+                    if not exists:
+                        self.colors.append(char)
                     self.endPoints.append(node)
                 else:
                     self.emptyNodes += 1
@@ -62,25 +66,24 @@ class Puzzle:
             print(line)
 
     def btAlgorithm(self):
-        startTime = time.time()
         #print("Starting backtracking...")
         #print(self.colors)
         if self.goalTest():
             #print("Goal Found")
-            endTime = time.time()
-            self.runTime = endTime - startTime
             return True
 
-        nextNode = self.getUnassignedNode()
+        nextNode = self.getRandomUnassignedNode()
         if nextNode == None:
             #print("No Nodes")
             return None
         else:
             #print(str(nextNode.row) + "," + str(nextNode.col))
             pass
+
+        self.randomOrderColors()
         for color in self.colors:
             #print("Checking color: " + color)
-            if self.meetsContraints(nextNode, color):
+            if self.meetsSmartContraints(nextNode, color):
                 self.numAssignments += 1
                 nextNode.value = color
                 self.emptyNodes -= 1
@@ -94,14 +97,14 @@ class Puzzle:
                     self.emptyNodes += 1
         return None
 
+    def randomOrderColors(self):
+        shuffle(self.colors)
+
     def smartBtAlgorithm(self):
-        startTime = time.time()
         #print("Starting backtracking...")
         #print(self.colors)
         if self.goalTest():
             #print("Goal Found")
-            endTime = time.time()
-            self.runTime = endTime - startTime
             return True
 
         nextNode = self.getUnassignedNode()
@@ -111,9 +114,11 @@ class Puzzle:
         else:
             #print(str(nextNode.row) + "," + str(nextNode.col))
             pass
+
+        self.orderColors(nextNode)
         for color in self.colors:
             #print("Checking color: " + color)
-            if self.meetsSmartContraints(nextNode, color):
+            if self.meetsContraints(nextNode, color):
                 self.numAssignments += 1
                 nextNode.value = color
                 self.emptyNodes -= 1
@@ -127,12 +132,104 @@ class Puzzle:
                     self.emptyNodes += 1
         return None
 
+    def smarterBtAlgorithm(self):
+        #print("Starting backtracking...")
+        #print(self.colors)
+        if self.goalTest():
+            #print("Goal Found")
+            return True
+
+        nextNode = self.getUnassignedNode()
+        if nextNode == None:
+            #print("No Nodes")
+            return None
+        else:
+            #print(str(nextNode.row) + "," + str(nextNode.col))
+            pass
+
+        for color in self.colors:
+            #print("Checking color: " + color)
+            if self.meetsSmartContraints(nextNode, color):
+                self.numAssignments += 1
+                nextNode.value = color
+                self.emptyNodes -= 1
+                #self.printPuzzle()
+                #input("Press Enter to continue")
+                currentState = self.smarterBtAlgorithm()
+                if currentState != None:
+                    return currentState
+                else:
+                    nextNode.value = '_'
+                    self.emptyNodes += 1
+        return None
+
+    def orderColors(self, node):
+        adjacentNodes = self.getAdjacentNodes(node)
+        colorCount = {}
+        for color in self.colors:
+            colorCount[color] = 0
+        for adjacentNode in adjacentNodes:
+            if adjacentNode.value != '_':
+                colorCount[adjacentNode.value] += 1
+        sortedColors = sorted(colorCount.items(), key=lambda x: x[1], reverse=True)
+        self.colors = []
+        for color, count in sortedColors:
+            self.colors.append(color)
+
+    def sortColors(self):
+        colors = {}
+        for color in self.colors:
+            startingNode = None
+            for node in self.endPoints:
+                if node.value == color:
+                    if startingNode == None:
+                        startingNode = node
+                    else:
+                        distance = abs(startingNode.row - node.row) + abs(startingNode.col - node.col)
+                        colors[color] = distance
+        sortedColors = sorted(colors.items(), key=lambda x: x[1], reverse=True)
+        self.colors = []
+        for color, distance in sortedColors:
+            self.colors.append(color)
+
+
     def getUnassignedNode(self):
+        availableNodes = []
         for row in self.colList:
             for node in row:
                 if node.value == '_':
-                    return node
+                    availableNodes.append(node)
+
+        if len(availableNodes) == 0:
+            return None
+
+        return availableNodes[0]
+
+    def getBestUnassignedNode(self):
+        for color in self.colors:
+            for i in range(0, self.rowsInMaze):
+                for j in range(0, self.colsInMaze):
+                    if self.colList[i][j].value == '_':
+                        adjacentNodes = self.getAdjacentNodes(self.colList[i][j])
+                        for node in adjacentNodes:
+                            if node.value == color:
+                                return self.colList[i][j]
+
         return None
+
+    def getRandomUnassignedNode(self):
+        availableNodes = []
+        for row in self.colList:
+            for node in row:
+                if node.value == '_':
+                    availableNodes.append(node)
+
+
+        if len(availableNodes) == 0:
+            return None
+
+        randNode = availableNodes[randint(0, len(availableNodes) - 1)]
+        return randNode
 
     def getAdjacentNodes(self, node):
         adjacentNodes = []
@@ -165,8 +262,10 @@ class Puzzle:
         for otherNode in adjacentNodes:
             if otherNode.value == '_' or otherNode.value == color:
                 matchingColorNodes += 1
-        if matchingColorNodes == 0:
+        if node.startValue and matchingColorNodes < 1:
             #print("Failed Constraint: No matching adjacent nodes")
+            return False
+        if not node.startValue and matchingColorNodes < 2:
             return False
 
         # Check for zig-zag pattern on non-start nodes
@@ -216,8 +315,10 @@ class Puzzle:
         for otherNode in adjacentNodes:
             if otherNode.value == '_' or otherNode.value == color:
                 matchingColorNodes += 1
-        if matchingColorNodes == 0:
+        if node.startValue and matchingColorNodes < 1:
             #print("Failed Constraint: No matching adjacent nodes")
+            return False
+        if not node.startValue and matchingColorNodes < 2:
             return False
 
         # Check for zig-zag pattern on non-start nodes
@@ -247,6 +348,20 @@ class Puzzle:
         #self.printPuzzle()
         #input("Press Enter to continue")
         if self.emptyNodes == 0:
+            #for row in self.colList:
+                #for node in row:
+                    #adjacentNodes = self.getAdjacentNodes(node)
+
+                    #matchedColor = 0
+                    #for otherNode in adjacentNodes:
+                        #if otherNode.value == node.value:
+                            #matchedColor += 1
+                    #if node.startValue:
+                        #if matchedColor < 2:
+                            #return False
+                        #else:
+                            #if matchedColor < 1:
+                                #return False
             self.printPuzzle()
             return True
         else:
