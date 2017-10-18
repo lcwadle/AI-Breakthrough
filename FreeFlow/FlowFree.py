@@ -1,4 +1,5 @@
 from random import randint, shuffle
+import sys
 
 class Node:
     def __init__(self, row, col, value):
@@ -6,6 +7,7 @@ class Node:
         self.col = col
         self.value = value
         self.startValue = False
+        self.availableColors = []
 
 class Puzzle:
     # Variables: Nodes in the puzzle
@@ -118,7 +120,7 @@ class Puzzle:
         self.orderColors(nextNode)
         for color in self.colors:
             #print("Checking color: " + color)
-            if self.meetsContraints(nextNode, color):
+            if self.meetsSmartContraints(nextNode, color):
                 self.numAssignments += 1
                 nextNode.value = color
                 self.emptyNodes -= 1
@@ -139,7 +141,7 @@ class Puzzle:
             #print("Goal Found")
             return True
 
-        nextNode = self.getUnassignedNode()
+        nextNode = self.getBestUnassignedNode()
         if nextNode == None:
             #print("No Nodes")
             return None
@@ -147,7 +149,8 @@ class Puzzle:
             #print(str(nextNode.row) + "," + str(nextNode.col))
             pass
 
-        for color in self.colors:
+        self.orderColors(nextNode)
+        for color in nextNode.availableColors:
             #print("Checking color: " + color)
             if self.meetsSmartContraints(nextNode, color):
                 self.numAssignments += 1
@@ -172,9 +175,9 @@ class Puzzle:
             if adjacentNode.value != '_':
                 colorCount[adjacentNode.value] += 1
         sortedColors = sorted(colorCount.items(), key=lambda x: x[1], reverse=True)
-        self.colors = []
+        node.availableColors = []
         for color, count in sortedColors:
-            self.colors.append(color)
+            node.availableColors.append(color)
 
     def sortColors(self):
         colors = {}
@@ -192,7 +195,6 @@ class Puzzle:
         for color, distance in sortedColors:
             self.colors.append(color)
 
-
     def getUnassignedNode(self):
         availableNodes = []
         for row in self.colList:
@@ -206,16 +208,41 @@ class Puzzle:
         return availableNodes[0]
 
     def getBestUnassignedNode(self):
-        for color in self.colors:
-            for i in range(0, self.rowsInMaze):
-                for j in range(0, self.colsInMaze):
-                    if self.colList[i][j].value == '_':
-                        adjacentNodes = self.getAdjacentNodes(self.colList[i][j])
-                        for node in adjacentNodes:
-                            if node.value == color:
-                                return self.colList[i][j]
+        # Assign constraints to available nodes
+        numColors = sys.maxsize
+        mostConstrained = None
 
-        return None
+        for row in self.colList:
+            for node in row:
+                if node.value == '_':
+                    node.availableColors = []
+                    #print(str(node.row) + "," + str(node.col))
+                    for color in self.colors:
+                        #print(color)
+                        if self.meetsSmartContraints(node, color):
+                            #print("Add: " + color)
+                            node.availableColors.append(color)
+                    if len(node.availableColors) == 0:
+                        return None
+                    if len(node.availableColors) < numColors:
+                        mostConstrained = node
+                        numColors = len(node.availableColors)
+                    elif len(node.availableColors) == numColors:
+                        if self.evalConstraints(node) < self.evalConstraints(mostConstrained):
+                            mostConstrained = node
+                            numColors = len(node.availableColors)
+        #print(str(mostConstrained.row) + "," + str(mostConstrained.col))
+
+        return mostConstrained
+
+    def evalConstraints(self, node):
+        adjacentNodes = self.getAdjacentNodes(node)
+
+        count = 0
+        for adjacentNode in adjacentNodes:
+            if adjacentNode == '_':
+                count += 1
+        return count
 
     def getRandomUnassignedNode(self):
         availableNodes = []
@@ -250,11 +277,6 @@ class Puzzle:
         return adjacentNodes
 
     def meetsContraints(self, node, color):
-        # Check to make sure node does not already contain a color
-        if node.value != '_':
-            #print("Failed Constraint: Node already has a value")
-            return False
-
         adjacentNodes = self.getAdjacentNodes(node)
 
         # Check to make sure node is not Isolated
@@ -284,13 +306,9 @@ class Puzzle:
         return True
 
     def meetsSmartContraints(self, node, color):
-        # Check to make sure node does not already contain a color
-        if node.value != '_':
-            #print("Failed Constraint: Node already has a value")
-            return False
-
         adjacentNodes = self.getAdjacentNodes(node)
 
+        # Forward Checking
         # Check to make sure node is not isolating an adjacent node
         for otherNode in adjacentNodes:
             if otherNode.value != '_':
@@ -337,44 +355,8 @@ class Puzzle:
         return True
 
     def goalTest(self):
-        #condition = True
-        #for node in self.endPoints:
-            #print("Color: " + node.value)
-            #if self.goalsMet(node) == False:
-                #condition = False
-                #print("Failed")
-                #break
-            #print("Success")
-        #self.printPuzzle()
-        #input("Press Enter to continue")
         if self.emptyNodes == 0:
-            #for row in self.colList:
-                #for node in row:
-                    #adjacentNodes = self.getAdjacentNodes(node)
-
-                    #matchedColor = 0
-                    #for otherNode in adjacentNodes:
-                        #if otherNode.value == node.value:
-                            #matchedColor += 1
-                    #if node.startValue:
-                        #if matchedColor < 2:
-                            #return False
-                        #else:
-                            #if matchedColor < 1:
-                                #return False
             self.printPuzzle()
             return True
         else:
             return False
-
-    def goalsMet(self, startNode):
-        adjacentNodes = self.getAdjacentNodes(startNode)
-        #print("Starting Node: " + str(startNode.row) + "," + str(startNode.col) + " - " + startNode.value)
-        for adjacentNode in adjacentNodes:
-            #print("Adjacent Node: " + str(adjacentNode.row) + "," + str(adjacentNode.col) + " - " + adjacentNode.value)
-            #input("Press Enter to continue")
-            if adjacentNode.value == startNode.value and adjacentNode.startValue == True:
-                return True
-            elif adjacentNode.value == startNode.value:
-                return self.goalsMet(adjacentNode)
-        return False
