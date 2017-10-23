@@ -4,7 +4,7 @@ class Player:
     def __init__(self, symbol, heuristic):
         self.symbol = symbol
         self.pieces = 16
-        self.captures = 0
+
         if heuristic == "offense_1":
             self.heuristic = self.offense_1
         if heuristic == "defense_1":
@@ -15,11 +15,11 @@ class Player:
         if symbol == 'x':
             self.direction = 1
 
-    def defense_1(self, state):
+    def defense_1(self, state, player):
         # Number of pieces remaining for active_player
-        return 2 * state.active_player.pieces + random.random()
+        return 2 * player.pieces + random.random()
 
-    def offense_1(self, state):
+    def offense_1(self, state, player):
         # Number of pieces remaining for active_player
 
-        return 2 * (30 - state.inactive_player.pieces) + random.random()
+        return 2 * (30 - player.pieces) + random.random()
