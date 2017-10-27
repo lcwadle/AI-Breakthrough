@@ -14,12 +14,12 @@ class AlphaBetaPlayer:
         moves = state.get_moves()
         temp_active_pieces = state.active_player.pieces
         temp_inactive_pieces = state.inactive_player.pieces
+        temp_active_distance = state.active_player.shortest_distance
+        temp_inactive_distance = state.inactive_player.shortest_distance
         alpha = float("-inf")
         beta = float("inf")
         for move in moves:
-            print(move.newPosition)
-            state.active_player.pieces = temp_active_pieces
-            state.inactive_player.pieces = temp_inactive_pieces
+            #print(move.newPosition)
             self.moves_expanded += 1
             value = self.min_value(state.move(move) , alpha, beta, depth)
             print(value)
@@ -27,8 +27,13 @@ class AlphaBetaPlayer:
             if value > best_score:
                 best_score = value
                 best_move = move
-        state.active_player.pieces = temp_active_pieces
-        state.inactive_player.pieces = temp_inactive_pieces
+            state.active_player.pieces = temp_active_pieces
+            state.inactive_player.pieces = temp_inactive_pieces
+            state.active_player.shortest_distance = temp_active_distance
+            state.inactive_player.shortest_distance = temp_inactive_distance
+
+        if best_score == float("-inf"):
+            best_move = moves[0]
         print(self.moves_expanded)
         print(best_score)
         return best_move
@@ -39,19 +44,23 @@ class AlphaBetaPlayer:
         if state.goal:
             return float("inf")
         if depth == 0:
-            return state.inactive_player.heuristic(state, state.active_player)
+            return state.inactive_player.heuristic(state, state.active_player, state.inactive_player)
 
         value = float("inf")
         temp_active_pieces = state.active_player.pieces
         temp_inactive_pieces = state.inactive_player.pieces
+        temp_active_distance = state.active_player.shortest_distance
+        temp_inactive_distance = state.inactive_player.shortest_distance
         for move in state.get_moves():
-            state.active_player.pieces = temp_active_pieces
-            state.inactive_player.pieces = temp_inactive_pieces
             self.moves_expanded += 1
             value = min(value, self.max_value(state.move(move), alpha, beta, depth))
             if value <= alpha:
                 return value
             beta = min(beta, value)
+            state.active_player.pieces = temp_active_pieces
+            state.inactive_player.pieces = temp_inactive_pieces
+            state.active_player.shortest_distance = temp_active_distance
+            state.inactive_player.shortest_distance = temp_inactive_distance
         return value
 
     def max_value(self, state, alpha, beta, depth):
@@ -60,17 +69,21 @@ class AlphaBetaPlayer:
             return float("-inf")
 
         if depth == 0:
-            return state.active_player.heuristic(state, state.inactive_player)
+            return state.active_player.heuristic(state, state.inactive_player, state.active_player)
 
         value = float("-inf")
         temp_active_pieces = state.active_player.pieces
         temp_inactive_pieces = state.inactive_player.pieces
+        temp_active_distance = state.active_player.shortest_distance
+        temp_inactive_distance = state.inactive_player.shortest_distance
         for move in state.get_moves():
-            state.active_player.pieces = temp_active_pieces
-            state.inactive_player.pieces = temp_inactive_pieces
             self.moves_expanded += 1
             value = max(value, self.min_value(state.move(move), alpha, beta, depth))
             if value >= beta:
                 return value
             alpha = max(alpha, value)
+            state.active_player.pieces = temp_active_pieces
+            state.inactive_player.pieces = temp_inactive_pieces
+            state.active_player.shortest_distance = temp_active_distance
+            state.inactive_player.shortest_distance = temp_inactive_distance
         return value

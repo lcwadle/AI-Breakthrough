@@ -11,21 +11,19 @@ class MinimaxPlayer:
         self.moves_expanded = 0
         best_score = float("-inf")
         best_move = None
-        moves = state.get_moves()
         temp_active_pieces = state.active_player.pieces
         temp_inactive_pieces = state.inactive_player.pieces
-        for move in moves:
-            state.active_player.pieces = temp_active_pieces
-            state.inactive_player.pieces = temp_inactive_pieces
+
+        for move in state.get_moves():
             self.moves_expanded += 1
             value = self.min_value(state.move(move), depth)
             if value > best_score:
                 best_score = value
                 best_move = move
-        state.active_player.pieces = temp_active_pieces
-        state.inactive_player.pieces = temp_inactive_pieces
-        print(self.moves_expanded)
-        print(best_score)
+            state.active_player.pieces = temp_active_pieces
+            state.inactive_player.pieces = temp_inactive_pieces
+        #print(self.moves_expanded)
+        #print(best_score)
         return best_move
 
     def min_value(self, state, depth):
@@ -40,10 +38,10 @@ class MinimaxPlayer:
         temp_active_pieces = state.active_player.pieces
         temp_inactive_pieces = state.inactive_player.pieces
         for move in state.get_moves():
-            state.active_player.pieces = temp_active_pieces
-            state.inactive_player.pieces = temp_inactive_pieces
             self.moves_expanded += 1
             value = min(value, self.max_value(state.move(move), depth))
+            state.active_player.pieces = temp_active_pieces
+            state.inactive_player.pieces = temp_inactive_pieces
         return value
 
     def max_value(self, state, depth):
@@ -59,8 +57,8 @@ class MinimaxPlayer:
         temp_active_pieces = state.active_player.pieces
         temp_inactive_pieces = state.inactive_player.pieces
         for move in state.get_moves():
-            state.active_player.pieces = temp_active_pieces
-            state.inactive_player.pieces = temp_inactive_pieces
             self.moves_expanded += 1
             value = max(value, self.min_value(state.move(move), depth))
+            state.active_player.pieces = temp_active_pieces
+            state.inactive_player.pieces = temp_inactive_pieces
         return value

@@ -10,7 +10,7 @@ num_moves = 0
 
 board = Board.Board(8, 8)
 player_1 = Player.Player('o', "offense_1")
-player_2 = Player.Player('x', "offense_1")
+player_2 = Player.Player('x', "offense_2")
 
 state = State.State(board, player_1, player_2)
 state.board.print_board()
@@ -20,11 +20,11 @@ while not state.goal:
     if i % 2 == 1:
         player1 = player_2
         player2 = player_1
-        player = AlphaBetaPlayer.AlphaBetaPlayer(state, 4)
+        player = AlphaBetaPlayer.AlphaBetaPlayer(state, 3)
     else:
         player1 = player_1
         player2 = player_2
-        player = MinimaxPlayer.MinimaxPlayer(state, 3)
+        player = AlphaBetaPlayer.AlphaBetaPlayer(state, 3)
 
     move = player.get_move(state)
     print("Player " + state.active_player.symbol)

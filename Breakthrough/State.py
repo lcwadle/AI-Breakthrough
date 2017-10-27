@@ -60,8 +60,16 @@ class State:
         new_board.board[move.newPosition[0]][move.newPosition[1]].value = self.active_player.symbol
         new_state = State(new_board, self.inactive_player, self.active_player)
 
-        if move.newPosition[0] == 0 and new_state.active_player.symbol == 'x' or new_state.active_player.pieces == 0:
+
+        if self.active_player.symbol == 'o' and move.newPosition[0] < self.active_player.shortest_distance:
+            self.active_player.shortest_distance = move.newPosition[0]
+            #print(self.active_player.shortest_distance)
+        if self.active_player.symbol == 'x' and 7 - move.newPosition[0] < self.active_player.shortest_distance:
+            self.active_player.shortest_distance = 7 - move.newPosition[0]
+            #print(self.active_player.shortest_distance)
+
+        if move.newPosition[0] == 0 or new_state.active_player.pieces == 0:
             new_state.goal = True
-        if move.newPosition[0] == new_state.board.rows - 1 and new_state.active_player.symbol == 'o' or new_state.active_player.pieces == 0:
+        if move.newPosition[0] == new_state.board.rows - 1 or new_state.active_player.pieces == 0:
             new_state.goal = True
         return new_state
