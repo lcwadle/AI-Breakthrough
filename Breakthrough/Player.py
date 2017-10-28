@@ -30,7 +30,7 @@ class Player:
 
     def offense_2(self, state, player, inactive_player):
         # Number of pieces remaining for the inactive player and minimize the shortest distance to goal for active_player
-        return 2 * (30 - player.pieces) - 2 * (30 - inactive_player.pieces) - 2 * player.shortest_distance + random.random()
+        return 2 * (16 - player.pieces) + 2 * inactive_player.pieces + 2 * (7 - inactive_player.shortest_distance) + random.random()
 
     def defense_2(self, state, player, inactive_player):
         # Number of pieces remaining for the active_player and maximize the shortest distance to goal for inactive_player

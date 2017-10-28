@@ -42,7 +42,7 @@ class AlphaBetaPlayer:
         depth -= 1
 
         if state.goal:
-            return float("inf")
+            return 100 + (100 * depth)
         if depth == 0:
             return state.inactive_player.heuristic(state, state.active_player, state.inactive_player)
 
@@ -66,7 +66,7 @@ class AlphaBetaPlayer:
     def max_value(self, state, alpha, beta, depth):
         depth -= 1
         if state.goal:
-            return float("-inf")
+            return -100 - (100 * depth)
 
         if depth == 0:
             return state.active_player.heuristic(state, state.inactive_player, state.active_player)

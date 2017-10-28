@@ -20,11 +20,11 @@ while not state.goal:
     if i % 2 == 1:
         player1 = player_2
         player2 = player_1
-        player = AlphaBetaPlayer.AlphaBetaPlayer(state, 3)
+        player = AlphaBetaPlayer.AlphaBetaPlayer(state, 4)
     else:
         player1 = player_1
         player2 = player_2
-        player = AlphaBetaPlayer.AlphaBetaPlayer(state, 3)
+        player = AlphaBetaPlayer.AlphaBetaPlayer(state, 4)
 
     move = player.get_move(state)
     print("Player " + state.active_player.symbol)
@@ -32,6 +32,9 @@ while not state.goal:
     state.board.print_board()
     print("Player " + state.active_player.symbol + " pieces: " + str(state.active_player.pieces))
     print("Player " + state.inactive_player.symbol + " pieces: " + str(state.inactive_player.pieces))
+    print("Player " + state.active_player.symbol + " distance: " + str(state.active_player.shortest_distance))
+    print("Player " + state.inactive_player.symbol + " distance: " + str(state.inactive_player.shortest_distance))
+    #input("Press enter to continue...")
     num_moves += 1
     i += 1
 
