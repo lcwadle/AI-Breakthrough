@@ -3,31 +3,32 @@ import Player
 import State
 import MinimaxPlayer
 import AlphaBetaPlayer
+import HumanPlayer
 from timeit import default_timer as timer
 for j in range(0, 10):
     start = timer()
     num_moves = 0
 
     board = Board.Board(8, 8)
-    player_1 = Player.Player('o', "defense_2")
+    player_1 = Player.Player('o', "offense_2")
     player_2 = Player.Player('x', "defense_1")
 
     state = State.State(board, player_1, player_2)
-    #state.board.print_board()
+    state.board.print_board()
     #print("Begin...")
     i = 0
     while not state.goal:
         if i % 2 == 1:
-            player = AlphaBetaPlayer.AlphaBetaPlayer(state, 5)
+            player = AlphaBetaPlayer.AlphaBetaPlayer(state, 4)
         else:
-            player = AlphaBetaPlayer.AlphaBetaPlayer(state, 5)
+            player = HumanPlayer.HumanPlayer(state)
 
         move = player.get_move(state)
         if move == None:
             break
         #print("Player " + state.active_player.symbol)
         state = state.move(move)
-        #state.board.print_board()
+        state.board.print_board()
         #print("Player " + state.active_player.symbol + " pieces: " + str(state.active_player.pieces))
         #print("Player " + state.inactive_player.symbol + " pieces: " + str(state.inactive_player.pieces))
         #print("Player " + state.active_player.symbol + " distance: " + str(state.active_player.shortest_distance))

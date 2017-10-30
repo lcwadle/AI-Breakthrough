@@ -65,25 +65,33 @@ class State:
         new_state = State(new_board, self.inactive_player, self.active_player)
         min_distance = 7
         pieces = new_state.get_pieces(new_state.inactive_player)
+        new_state.inactive_player.goal_pieces = 0
         for piece in pieces:
             if new_state.inactive_player.symbol == 'o':
+                if piece.row == 0:
+                    new_state.inactive_player.goal_pieces += 1
                 min_distance = min(piece.row, min_distance)
             if new_state.inactive_player.symbol == 'x':
+                if piece.row == new_state.board.rows - 1:
+                    new_state.inactive_player.goal_pieces += 1
                 min_distance = min(7 - piece.row, min_distance)
         new_state.inactive_player.shortest_distance = min_distance
         new_state.inactive_player.pieces = len(pieces)
         min_distance = 7
         pieces = new_state.get_pieces(new_state.active_player)
+        new_state.active_player.goal_pieces = 0
         for piece in pieces:
             if new_state.active_player.symbol == 'o':
+                if piece.row == 0:
+                    new_state.active_player.goal_pieces += 1
                 min_distance = min(piece.row, min_distance)
             if new_state.active_player.symbol == 'x':
+                if piece.row == new_state.board.rows - 1:
+                    new_state.active_player.goal_pieces += 1
                 min_distance = min(7 - piece.row, min_distance)
         new_state.active_player.shortest_distance = min_distance
         new_state.active_player.pieces = len(pieces)
 
-        if move.newPosition[0] == 0 or new_state.active_player.pieces == 0:
-            new_state.goal = True
-        if move.newPosition[0] == new_state.board.rows - 1 or new_state.active_player.pieces == 0:
+        if new_state.inactive_player.goal_pieces == 3 or new_state.active_player.pieces == 2:
             new_state.goal = True
         return new_state

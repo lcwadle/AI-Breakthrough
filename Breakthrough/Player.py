@@ -36,8 +36,8 @@ class Player:
         #state.board.print_board()
         #print("Opponent pieces: " + str(16 - player.pieces) + ", Player pieces: " + str(inactive_player.pieces) + ", Distance: " + str(inactive_player.shortest_distance))
         #input("Press enter")
-        return 2 * (16 - player.pieces) + 2 * inactive_player.pieces + 2.5 * (7 - inactive_player.shortest_distance) + random.random()
+        return 3 * (16 - player.pieces) + 2 * inactive_player.pieces + 2.5 * (7 - inactive_player.shortest_distance) + 2.5 * inactive_player.goal_pieces + random.random()
 
     def defense_2(self, state, player, inactive_player):
         # Number of pieces remaining for the active_player and maximize the shortest distance to goal for inactive_player
-        return 2 * inactive_player.pieces + 2 * player.shortest_distance + 2 * (7 - inactive_player.shortest_distance) + random.random()
+        return 3 * inactive_player.pieces + 2 * player.shortest_distance + 2 * (7 - inactive_player.shortest_distance) + 2.5 * inactive_player.goal_pieces + random.random()
