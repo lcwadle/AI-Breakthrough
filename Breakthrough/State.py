@@ -34,48 +34,53 @@ class State:
             if piece.row + direction >= 0 and piece.row + direction < self.board.rows:
                 if piece.col + direction >= 0 and piece.col + direction < self.board.cols:
                     if self.board.board[piece.row + direction][piece.col + direction].value != self.active_player.symbol:
-                        if self.board.board[piece.row + direction][piece.col + direction].value != '-':
-                            moves.insert(0,Move.Move((piece.row, piece.col), (piece.row + direction, piece.col + direction)))
-                        else:
-                            moves.append(Move.Move((piece.row, piece.col), (piece.row + direction, piece.col + direction)))
+                        moves.append(Move.Move((piece.row, piece.col), (piece.row + direction, piece.col + direction)))
             # Right
             if piece.row + direction >= 0 and piece.row + direction < self.board.rows:
                 if piece.col - direction >= 0 and piece.col - direction < self.board.cols:
                     if self.board.board[piece.row + direction][piece.col - direction].value != self.active_player.symbol:
-                        if self.board.board[piece.row + direction][piece.col - direction].value != '-':
-                            moves.insert(0,Move.Move((piece.row, piece.col), (piece.row + direction, piece.col - direction)))
-                        else:
-                            moves.append(Move.Move((piece.row, piece.col), (piece.row + direction, piece.col - direction)))
+                        moves.append(Move.Move((piece.row, piece.col), (piece.row + direction, piece.col - direction)))
+
+        sorted_moves = []
+        for move in moves:
+            if self.board.board[move.newPosition[0]][move.newPosition[1]].value != '-':
+                sorted_moves.insert(0, move)
+            elif self.active_player.symbol == 'o' and move.newPosition[0] < self.active_player.shortest_distance:
+                sorted_moves.insert(0, move)
+            elif self.active_player.symbol == 'x' and (7 - move.newPosition[0]) < self.active_player.shortest_distance:
+                sorted_moves.insert(0, move)
+            else:
+                sorted_moves.append(move)
 
         #for move in moves:
             #print(str(move.currentPosition[0]) + ',' + str(move.currentPosition[1]) + " to " + str(move.newPosition[0]) + ',' + str(move.newPosition[1]))
 
-        return moves
+        return sorted_moves
 
     def move(self, move):
         new_board = deepcopy(self.board)
         new_board.board[move.currentPosition[0]][move.currentPosition[1]].value = '-'
-        if new_board.board[move.newPosition[0]][move.newPosition[1]].value != '-':
-            self.inactive_player.pieces -= 1
         new_board.board[move.newPosition[0]][move.newPosition[1]].value = self.active_player.symbol
 
         new_state = State(new_board, self.inactive_player, self.active_player)
         min_distance = 7
-        for piece in new_state.get_pieces(new_state.inactive_player):
+        pieces = new_state.get_pieces(new_state.inactive_player)
+        for piece in pieces:
             if new_state.inactive_player.symbol == 'o':
                 min_distance = min(piece.row, min_distance)
             if new_state.inactive_player.symbol == 'x':
                 min_distance = min(7 - piece.row, min_distance)
         new_state.inactive_player.shortest_distance = min_distance
-
-
-
-        if self.active_player.symbol == 'o' and move.newPosition[0] < self.active_player.shortest_distance:
-            self.active_player.shortest_distance = move.newPosition[0]
-            #print(self.active_player.shortest_distance)
-        if self.active_player.symbol == 'x' and 7 - move.newPosition[0] < self.active_player.shortest_distance:
-            self.active_player.shortest_distance = 7 - move.newPosition[0]
-            #print(self.active_player.shortest_distance)
+        new_state.inactive_player.pieces = len(pieces)
+        min_distance = 7
+        pieces = new_state.get_pieces(new_state.active_player)
+        for piece in pieces:
+            if new_state.active_player.symbol == 'o':
+                min_distance = min(piece.row, min_distance)
+            if new_state.active_player.symbol == 'x':
+                min_distance = min(7 - piece.row, min_distance)
+        new_state.active_player.shortest_distance = min_distance
+        new_state.active_player.pieces = len(pieces)
 
         if move.newPosition[0] == 0 or new_state.active_player.pieces == 0:
             new_state.goal = True

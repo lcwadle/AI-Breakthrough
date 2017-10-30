@@ -1,0 +1,174 @@
+
+C:\Users\lcwad\GitHub\CS440 MP2\Breakthrough>python runBreakthrough.py
+==========
+|xxx--oxx|
+|---x-xxx|
+|x---o-x-|
+|------o-|
+|--------|
+|-x-o----|
+|oo---ooo|
+|ooooo-oo|
+==========
+Player o wins!
+Captures: 6
+
+Player o Tree Nodes Expanded: 257906
+Player x Tree Nodes Expanded: 516736
+29 moves with an average time of 35.3027407313927.
+Average nodes expanded per move: 26711.793103448275
+==========
+|--x--ox-|
+|x--x-x-x|
+|ox------|
+|-x---o--|
+|--------|
+|--xo--o-|
+|oo-o--oo|
+|o--ooo--|
+==========
+Player o wins!
+Captures: 9
+
+Player o Tree Nodes Expanded: 497650
+Player x Tree Nodes Expanded: 654999
+53 moves with an average time of 28.894909369047436.
+Average nodes expanded per move: 21748.094339622643
+==========
+|xxxx--ox|
+|-------x|
+|x-------|
+|-x------|
+|-x---o--|
+|oo------|
+|---oo---|
+|oooooooo|
+==========
+Player o wins!
+Captures: 9
+
+Player o Tree Nodes Expanded: 277233
+Player x Tree Nodes Expanded: 349560
+39 moves with an average time of 21.439779873381422.
+Average nodes expanded per move: 16071.615384615385
+==========
+|----o---|
+|xxx--xxx|
+|-----x-x|
+|-----o--|
+|-xo----o|
+|o---o---|
+|o---oo--|
+|o-o-o-oo|
+==========
+Player o wins!
+Captures: 9
+
+Player o Tree Nodes Expanded: 476998
+Player x Tree Nodes Expanded: 600108
+55 moves with an average time of 26.017548904427326.
+Average nodes expanded per move: 19583.745454545453
+==========
+|-xxx-xo-|
+|-x-----x|
+|-xx---x-|
+|-x------|
+|-o----x-|
+|o-------|
+|--oo--oo|
+|ooo-oooo|
+==========
+Player o wins!
+Captures: 7
+
+Player o Tree Nodes Expanded: 494349
+Player x Tree Nodes Expanded: 566359
+39 moves with an average time of 36.233398273599164.
+Average nodes expanded per move: 27197.641025641027
+==========
+|---xx-xo|
+|--------|
+|-xx-----|
+|-o---x--|
+|-o------|
+|---o-x--|
+|oo---oo-|
+|-oo--ooo|
+==========
+Player o wins!
+Captures: 11
+
+Player o Tree Nodes Expanded: 482715
+Player x Tree Nodes Expanded: 931404
+55 moves with an average time of 34.286815411836024.
+Average nodes expanded per move: 25711.254545454547
+==========
+|xx-xoxx-|
+|--x----x|
+|--x--xx-|
+|-x------|
+|---o----|
+|---oo-xo|
+|o---o--o|
+|oooo-ooo|
+==========
+Player o wins!
+Captures: 6
+
+Player o Tree Nodes Expanded: 386637
+Player x Tree Nodes Expanded: 623062
+33 moves with an average time of 41.058973242019974.
+Average nodes expanded per move: 30596.939393939392
+==========
+|-oxxx-x-|
+|----x-xx|
+|----o---|
+|-----o--|
+|-----x-o|
+|-o--o--o|
+|oo---o-o|
+|-o-oo--o|
+==========
+Player o wins!
+Captures: 10
+
+Player o Tree Nodes Expanded: 453347
+Player x Tree Nodes Expanded: 612837
+51 moves with an average time of 27.85688615053625.
+Average nodes expanded per move: 20905.56862745098
+==========
+|-x-xo-x-|
+|-x----x-|
+|-o----o-|
+|--------|
+|------o-|
+|--------|
+|--x---oo|
+|ooooo-oo|
+==========
+Player o wins!
+Captures: 12
+
+Player o Tree Nodes Expanded: 418812
+Player x Tree Nodes Expanded: 400132
+53 moves with an average time of 20.589685502544597.
+Average nodes expanded per move: 15451.77358490566
+==========
+|--xx--xo|
+|x---x---|
+|o---o--x|
+|-x--x---|
+|--------|
+|o---xo--|
+|o----o--|
+|oo-ooooo|
+==========
+Player o wins!
+Captures: 9
+
+Player o Tree Nodes Expanded: 434367
+Player x Tree Nodes Expanded: 658861
+51 moves with an average time of 28.594561870959616.
+Average nodes expanded per move: 21435.843137254902
+
+C:\Users\lcwad\GitHub\CS440 MP2\Breakthrough>
