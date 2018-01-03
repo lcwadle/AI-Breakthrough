@@ -5,7 +5,7 @@ class Board:
         self.rows = rows
         self.cols = cols
         self.board = []
-        
+
         for i in range(0, rows):
             row = []
             for j in range(0, cols):
@@ -20,7 +20,7 @@ class Board:
                     row.append(node)
             self.board.append(row)
 
-    def printBoard(self):
+    def print_board(self):
         border = "="
         for i in range(len(self.board[0]) + 1):
             border += '='
